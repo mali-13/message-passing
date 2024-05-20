@@ -1,0 +1,12 @@
+The frontend will emit location events to Kafka. This is done because there will be a large number of such events emitted
+in a short period of time. Kafka will be responsible for saving these events, and the Location Service will handle them
+at a frequency it can manage (without being overwhelmed). This will be real-time or near real-time when the flux is great.
+
+The frontend will request the list of connections from the Connection Service. The response from the Connection Service
+will also include person data, which the Connection Service does not have. To get this data, the Connection Service makes
+a gRPC request to the Person Service. gRPC is fast because it uses HTTP/2 (keeps the connection alive longer) and uses
+binary size-optimized requests and responses.
+
+To get all persons, the frontend will make a direct REST request to the Person Service. REST is the most popular
+message-passing technique, so the frontend team will already have the knowledge to use it. Moreover, the OpenAPI
+documentation will help the team discover, explore, and learn the available endpoints quickly and intuitively.
