@@ -29,3 +29,7 @@ class PersonService:
     @staticmethod
     def retrieve_all() -> List[Person]:
         return db.session.query(Person).all()
+
+    @staticmethod
+    def retrieve_by_ids(person_ids: List[int]) -> List[Person]:
+        return db.session.query(Person).filter(Person.id.in_(person_ids)).all()
