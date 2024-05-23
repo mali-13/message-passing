@@ -10,9 +10,12 @@ spec:
     port: 5000
     targetPort: 5000
     nodePort: 30002
+  - name: "50051"
+    port: 50051
+    targetPort: 50051
   selector:
     service: person-api
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment

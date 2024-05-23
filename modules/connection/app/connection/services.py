@@ -8,7 +8,7 @@ from sqlalchemy.sql import text
 
 from app.connection.gRPC.client import get_persons
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("connection-api")
 
 
@@ -92,7 +92,7 @@ class ConnectionService:
         large datasets. This is by design: what are some ways or techniques to help make this data integrate more
         smoothly for a better user experience for API consumers?
         """
-        print(
+        logger.info(
             f"Finding contacts for person_id: {person_id}, start_date: {start_date}, end_date: {end_date}, meters: {meters}")
 
         locations: List = db.session.query(Location).filter(
@@ -101,7 +101,7 @@ class ConnectionService:
             Location.creation_time >= start_date
         ).all()
 
-        print(f"Found {len(locations)} locations")
+        logger.info(f"Found {len(locations)} locations")
 
         # Prepare arguments for queries
         data = []
@@ -128,24 +128,24 @@ class ConnectionService:
         """
         )
 
-        print(f"Executing query for {len(data)} locations")
+        logger.info(f"Executing query for {len(data)} locations")
 
-        exposed_locations = sum([db.engine.execute(query, **line) for line in tuple(data)], [])
-        print(f"Found {len(exposed_locations)} exposed locations")
+        exposed_locations = sum([db.engine.execute(query, **line).fetchall() for line in tuple(data)], [])
+        logger.info(f"Found {len(exposed_locations)} exposed locations")
 
-        exposed_person_ids = [exposed_person_id for exposed_person_id in exposed_locations]
+        exposed_person_ids = [exposed_location[0] for exposed_location in exposed_locations]
 
-        print(f"Found {len(exposed_person_ids)} exposed person IDs")
-        print(f"Example exposed person ID: {exposed_person_ids[0]}")  # Print an example ID
+        logger.info(f"Found {len(exposed_person_ids)} exposed person IDs")
+        logger.info(f"Example exposed person ID: {exposed_person_ids[0]}")  # Print an example ID
 
         exposed_persons = get_persons(exposed_person_ids)
 
-        print(f"Found {len(exposed_persons)} exposed persons")
-        print(f"Example exposed person: {exposed_persons[0]}")
+        logger.info(f"Found {len(exposed_persons)} exposed persons")
+        logger.info(f"Example exposed person: {exposed_persons[0]}")
 
-        exposed_person_map = {person['person_id']: person for person in exposed_persons}
+        exposed_person_map = {person['id']: person for person in exposed_persons}
 
-        print(f"Created exposed person map with {len(exposed_person_map)} persons")
+        logger.info(f"Created exposed person map with {len(exposed_person_map)} persons")
 
         result: List[Connection] = []
         for (
@@ -162,7 +162,7 @@ class ConnectionService:
             )
             location.set_wkt_with_coords(exposed_lat, exposed_long)
 
-            print(f"Adding connection for exposed person_id: {exposed_person_id}")
+            logger.info(f"Adding connection for exposed person_id: {exposed_person_id}")
 
             result.append(
                 Connection(
@@ -170,6 +170,6 @@ class ConnectionService:
                 )
             )
 
-        print(f"Returning {len(result)} connections")
+        logger.info(f"Returning {len(result)} connections")
 
         return result

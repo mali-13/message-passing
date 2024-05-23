@@ -10,4 +10,6 @@ EXPOSE 5000
 EXPOSE 50051
 
 COPY . .
-CMD ["flask", "run", "--host", "0.0.0.0"]
+
+RUN chmod +x run-command.sh
+CMD ["./run-command.sh"]

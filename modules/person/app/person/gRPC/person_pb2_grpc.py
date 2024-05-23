@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import person_pb2 as person__pb2
+from app.person.gRPC import person_pb2 as app_dot_person_dot_gRPC_dot_person__pb2
 
 
 class PersonServiceStub(object):
@@ -16,8 +16,8 @@ class PersonServiceStub(object):
         """
         self.GetPersons = channel.unary_unary(
                 '/PersonService/GetPersons',
-                request_serializer=person__pb2.PersonRequest.SerializeToString,
-                response_deserializer=person__pb2.PersonResponse.FromString,
+                request_serializer=app_dot_person_dot_gRPC_dot_person__pb2.PersonRequest.SerializeToString,
+                response_deserializer=app_dot_person_dot_gRPC_dot_person__pb2.PersonResponse.FromString,
                 )
 
 
@@ -35,8 +35,8 @@ def add_PersonServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetPersons': grpc.unary_unary_rpc_method_handler(
                     servicer.GetPersons,
-                    request_deserializer=person__pb2.PersonRequest.FromString,
-                    response_serializer=person__pb2.PersonResponse.SerializeToString,
+                    request_deserializer=app_dot_person_dot_gRPC_dot_person__pb2.PersonRequest.FromString,
+                    response_serializer=app_dot_person_dot_gRPC_dot_person__pb2.PersonResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +60,7 @@ class PersonService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/PersonService/GetPersons',
-            person__pb2.PersonRequest.SerializeToString,
-            person__pb2.PersonResponse.FromString,
+            app_dot_person_dot_gRPC_dot_person__pb2.PersonRequest.SerializeToString,
+            app_dot_person_dot_gRPC_dot_person__pb2.PersonResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

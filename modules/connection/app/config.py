@@ -42,9 +42,9 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     CONFIG_NAME = "prod"
     SECRET_KEY = os.getenv("PROD_SECRET_KEY", "I'm Ron Burgundy?")
-    DEBUG = False
+    DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    TESTING = False
+    TESTING = True
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
