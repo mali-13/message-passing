@@ -1,5 +1,5 @@
 import logging
-from typing import Dict
+from typing import Dict, List
 
 from app import db
 from app.location.models import Location
@@ -10,8 +10,20 @@ logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("person-api")
 
 class LocationService:
+
     @staticmethod
-    def retrieve(location_id) -> Location:
+    def retrieve_all() -> List[Location]:
+        results = db.session.query(Location, Location.coordinate.ST_AsText()).all()
+        locations = []
+
+        for location, coord_text in results:
+            location.wkt_shape = coord_text
+            locations.append(location)
+
+        return locations
+
+    @staticmethod
+    def retrieve(location_id: int) -> Location:
         location, coord_text = (
             db.session.query(Location, Location.coordinate.ST_AsText())
             .filter(Location.id == location_id)
