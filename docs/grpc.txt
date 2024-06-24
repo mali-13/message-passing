@@ -1,0 +1,8 @@
+Connection Service makes a gRPC call to get persons by id.
+The client code is located at /modules/connection/app/gRPC/client.py
+
+Person Service listens for gRPC requests and returns person gRPC message.
+The gRPC server is located at /modules/person/app/gRPC/service.py
+The gRPC service is started as a separate python process.
+
+The definition of the person message lives in /modules/person/app/gRPC
